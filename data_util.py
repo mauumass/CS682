@@ -22,8 +22,8 @@ def load_data():
     
     return oe, anno
     
-def create_question_corpus(question_json):
-    corpus = defaultdict(int)
+def create_question_vocab(question_json):
+    vocab = defaultdict(int)
     questions = []
 
     for question in question_json['questions']:
@@ -34,30 +34,30 @@ def create_question_corpus(question_json):
         for word in tokens:
             if word.isalpha() and word not in stopWords:
                 word = stemmer.stem(word.lower())
-                corpus[word] += 1
+                vocab[word] += 1
                 filterd_tokens.append(word)
                 
         questions.append(filterd_tokens) 
                 
-    corpus = list(corpus.items())
-    corpus.sort(key=itemgetter(1), reverse=True)     
+    vocab = list(vocab.items())
+    vocab.sort(key=itemgetter(1), reverse=True)     
 
-    return dict(corpus[0:1000]), questions
+    return dict(vocab[0:1000]), questions
 
-def drop_words(corpus, questions):
+def drop_words(vocab, questions):
     mod_questions = []
-    corpus_list = corpus.keys()
+    vocab_list = vocab.keys()
     for q in questions:
         words = []
         for word in q:
-            if word in corpus_list:
+            if word in vocab_list:
                 words.append(word)
         mod_questions.append(words)
         
     return mod_questions
 
-def one_hot_encode(corpus, questions):
-    word_to_id = {token: idx for idx, token in enumerate(corpus.keys())}
+def one_hot_encode(vocab, questions):
+    word_to_id = {token: idx for idx, token in enumerate(vocab.keys())}
     tokens_docs = questions
     
     token_ids = [[word_to_id[token] for token in tokens_doc] for tokens_doc in tokens_docs]
