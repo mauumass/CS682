@@ -32,6 +32,4 @@ class EncoderCNN(nn.Module):
         features = self.bn(self.linear(features))
         return features
     
-def one_hot_encode(question):
-    
     
