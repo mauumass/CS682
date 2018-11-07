@@ -11,7 +11,6 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from collections import defaultdict
 from operator import itemgetter
-from sklearn.preprocessing import OneHotEncoder
 
 stopWords = set(stopwords.words('english'))
 stemmer = SnowballStemmer('english')
@@ -57,11 +56,11 @@ def drop_words(vocab, questions):
     return mod_questions
 
 def one_hot_encode(vocab, questions):
-    word_to_id = {token: idx for idx, token in enumerate(vocab.keys())}
-    tokens_docs = questions
-    
-    token_ids = [[word_to_id[token] for token in tokens_doc] for tokens_doc in tokens_docs]
-    vec = OneHotEncoder(n_values=word_to_id.values())
-    X = vec.fit_transform(np.asarray(token_ids[0]).reshape(1,-1))
-    print(X.shape)
-    
+    vect = np.zeros((len(questions), 1000))
+    wdict = {token: idx for idx, token in enumerate(vocab.keys())}
+
+    for idx, q in enumerate(questions):
+        for word in q:
+            vect[idx][wdict[word]] += 1
+            
+    return vect
