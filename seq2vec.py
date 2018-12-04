@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 def process_lengths(input):
     max_length = input.size(1)
-    lengths = list(max_length - input.data.eq(0).sum(1))
+    lengths = list(max_length - input.data.eq(0).sum(1).squeeze())
     return lengths
 
 def select_last(x, lengths):
@@ -73,6 +73,7 @@ if __name__ == '__main__':
     lstm = TwoLSTM(vocab, 300, 1024)
 
     input = Variable(torch.LongTensor([
-        [1,2,3,4,5,0,0]
+        [1,2,3,4,5,0,0],[6,1,2,3,4,5,0]
     ]))
     output = lstm(input)
+    print(output)
